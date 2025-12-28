@@ -1,4 +1,3 @@
-
 function haversine(lat1, lon1, lat2, lon2) {
     const R = 6371; 
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -96,9 +95,9 @@ class Graph {
     }
 }
 
-const map = L.map('map').setView([15.366, 75.124], 15); 
+const map = L.map('map').setView([15.366, 75.124], 13); 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
 const graph = new Graph();
@@ -108,56 +107,106 @@ let routeControl = null;
 let currentRoute = null;
 
 const stations = [
-    { id: 0, name: 'KLE Tech EV Hub (North)', latlng: [15.3750, 75.1250], rate: 100, price: 10, ports: 6 },
-    { id: 1, name: 'McDrive Fast Charge (East)', latlng: [15.3650, 75.1300], rate: 75, price: 9, ports: 4 },
-    { id: 2, name: 'Hans Hotel Power Point (South-East)', latlng: [15.3580, 75.1280], rate: 150, price: 12, ports: 8 },
-    { id: 3, name: 'Cricket Ground Eco Station (North-East)', latlng: [15.3720, 75.1320], rate: 50, price: 8, ports: 3 },
-    { id: 4, name: 'Lemon Tree Green Charge (South)', latlng: [15.3550, 75.1220], rate: 120, price: 11, ports: 5 },
-    { id: 5, name: 'ALLEN Campus Bolt (West)', latlng: [15.3620, 75.1150], rate: 80, price: 9.5, ports: 4 },
-    { id: 6, name: 'BVB Campus Charge (North-West)', latlng: [15.3700, 75.1180], rate: 90, price: 9.5, ports: 5 },
-    { id: 7, name: 'Vidyanavana Eco Charge (South-West)', latlng: [15.3580, 75.1180], rate: 60, price: 8.5, ports: 3 },
-    { id: 8, name: 'Philips Light Hub Power (Central-West)', latlng: [15.3660, 75.1100], rate: 110, price: 10.5, ports: 4 },
-    { id: 9, name: 'KV Raj Nagar Charge (East-Central)', latlng: [15.3680, 75.1350], rate: 70, price: 9, ports: 4 }
+    { id: 0, name: 'KLE Tech University', location: 'Vidyanagar, Hubli', latlng: [15.3750, 75.1250], rate: 150, price: 12, ports: 8, type: 'fast' },
+    { id: 1, name: 'Unkal Lake', location: 'Unkal, Hubli', latlng: [15.3650, 75.1300], rate: 50, price: 8, ports: 4, type: 'normal' },
+    { id: 2, name: 'KIMS Hospital', location: 'Vidyanagar Road, Hubli', latlng: [15.3580, 75.1280], rate: 180, price: 13, ports: 10, type: 'fast' },
+    { id: 3, name: 'Urban Oasis Mall', location: 'Gokul Road, Hubli', latlng: [15.3720, 75.1320], rate: 60, price: 9, ports: 5, type: 'normal' },
+    { id: 4, name: 'Jubilee Circle', location: 'Old Hubli, Hubli', latlng: [15.3550, 75.1220], rate: 150, price: 12, ports: 7, type: 'fast' },
+    { id: 5, name: 'Gokul Road', location: 'Near BVB College, Hubli', latlng: [15.3620, 75.1150], rate: 55, price: 8.5, ports: 4, type: 'normal' },
+    { id: 6, name: 'BVB Campus', location: 'Vidyanagar, Hubli', latlng: [15.3700, 75.1180], rate: 120, price: 11, ports: 6, type: 'fast' },
+    { id: 7, name: 'Vidyanagar Circle', location: 'Vidyanagar Main Road, Hubli', latlng: [15.3580, 75.1180], rate: 50, price: 8, ports: 3, type: 'normal' },
+    { id: 8, name: 'Hosur Cross', location: 'Hosur Road, Hubli', latlng: [15.3800, 75.1400], rate: 120, price: 11, ports: 5, type: 'fast' },
+    { id: 9, name: 'Navanagar', location: 'Navanagar Main Road, Hubli', latlng: [15.3500, 75.1350], rate: 55, price: 8.5, ports: 4, type: 'normal' },
+    { id: 10, name: 'Rani Chennamma Circle', location: 'CBT Circle, Hubli', latlng: [15.3680, 75.1220], rate: 180, price: 13, ports: 9, type: 'fast' },
+    { id: 11, name: 'Lingaraj Nagar', location: 'Near Tunga Hospital, Hubli', latlng: [15.3480, 75.1100], rate: 50, price: 8, ports: 3, type: 'normal' },
+    { id: 12, name: 'Old Hubli Market', location: 'Koppikar Road, Hubli', latlng: [15.3600, 75.1380], rate: 150, price: 12, ports: 7, type: 'fast' },
+    { id: 13, name: 'Akshay Park', location: 'Akshay Colony, Hubli', latlng: [15.3820, 75.1100], rate: 60, price: 9, ports: 4, type: 'normal' },
+    { id: 14, name: 'NH-48 Toll Plaza', location: 'Dharwad Road, Hubli', latlng: [15.3900, 75.1300], rate: 200, price: 14, ports: 12, type: 'fast' }
 ];
 
 const stationMarkers = [];
-stations.forEach(station => {
+let showNormal = true;
+let showFast = true;
+
+function createStationMarker(station) {
+    const isFast = station.type === 'fast';
     const icon = L.divIcon({
-        className: 'charging-station',
-        html: '⚡',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
+        className: isFast ? 'charging-station-fast' : 'charging-station-normal',
+        html: isFast ? '⚡' : '🔌',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
     });
-    const marker = L.marker(station.latlng, { icon }).addTo(map);
+    const marker = L.marker(station.latlng, { icon });
     marker.bindPopup(`
-        <b>${station.name}</b><br>
-        ⚡ Rate: ${station.rate} kW<br>
-        💰 Price: ₹${station.price}/kWh<br>
-        🔌 Ports: ${station.ports} available
+        <div style="font-family: system-ui; min-width: 200px;">
+            <b style="color: ${isFast ? '#ff6b00' : '#1976d2'}; font-size: 1.1em;">${station.name}</b><br>
+            <div style="color: #666; font-size: 0.85em; margin-top: 4px; margin-bottom: 8px;">📍 ${station.location}</div>
+            <div style="margin-top: 8px; font-size: 0.9em;">
+                ${isFast ? '⚡' : '🔌'} <b>${isFast ? 'Fast' : 'Normal'} Charging</b><br>
+                ⚡ Rate: <b>${station.rate} kW</b><br>
+                💰 Price: <b>₹${station.price}/kWh</b><br>
+                🔌 Ports: <b>${station.ports} available</b>
+            </div>
+        </div>
     `);
-    stationMarkers.push({ marker, station });
-});
+    return marker;
+}
+
+function updateStationVisibility() {
+    stationMarkers.forEach(({ marker, station }) => {
+        if ((station.type === 'normal' && showNormal) || (station.type === 'fast' && showFast)) {
+            marker.addTo(map);
+        } else {
+            map.removeLayer(marker);
+        }
+    });
+    updateStationCount();
+}
+
+function updateStationCount() {
+    let count = 0;
+    stationMarkers.forEach(({ station }) => {
+        if ((station.type === 'normal' && showNormal) || (station.type === 'fast' && showFast)) {
+            count++;
+        }
+    });
+    document.getElementById('stationCount').textContent = count;
+}
 
 stations.forEach(station => {
+    const marker = createStationMarker(station);
+    marker.addTo(map);
+    stationMarkers.push({ marker, station });
     graph.addNode(station.id, { ...station, isChargingStation: true });
 });
 
 const connections = [
-    { from: 0, to: 6, traffic: 1.0 },
+    { from: 0, to: 1, traffic: 1.1 },
     { from: 0, to: 3, traffic: 1.2 },
-    { from: 1, to: 3, traffic: 1.1 },
-    { from: 1, to: 9, traffic: 1.3 },
+    { from: 0, to: 6, traffic: 1.0 },
+    { from: 0, to: 8, traffic: 1.1 },
+    { from: 1, to: 2, traffic: 1.1 },
+    { from: 1, to: 3, traffic: 1.0 },
+    { from: 1, to: 12, traffic: 1.2 },
     { from: 2, to: 4, traffic: 1.0 },
-    { from: 2, to: 7, traffic: 1.2 },
-    { from: 3, to: 9, traffic: 1.0 },
-    { from: 4, to: 7, traffic: 1.1 },
-    { from: 5, to: 7, traffic: 1.2 },
-    { from: 5, to: 8, traffic: 1.1 },
-    { from: 6, to: 0, traffic: 1.0 },
-    { from: 6, to: 8, traffic: 1.3 },
-    { from: 8, to: 5, traffic: 1.1 },
-    { from: 9, to: 1, traffic: 1.0 },
-    { from: 9, to: 3, traffic: 1.1 }
+    { from: 2, to: 7, traffic: 1.0 },
+    { from: 3, to: 6, traffic: 1.2 },
+    { from: 3, to: 8, traffic: 1.1 },
+    { from: 3, to: 12, traffic: 1.3 },
+    { from: 4, to: 5, traffic: 1.1 },
+    { from: 4, to: 9, traffic: 1.2 },
+    { from: 4, to: 11, traffic: 1.1 },
+    { from: 5, to: 6, traffic: 1.2 },
+    { from: 5, to: 7, traffic: 1.0 },
+    { from: 5, to: 11, traffic: 1.1 },
+    { from: 5, to: 13, traffic: 1.3 },
+    { from: 6, to: 7, traffic: 1.1 },
+    { from: 6, to: 10, traffic: 1.0 },
+    { from: 6, to: 13, traffic: 1.2 },
+    { from: 8, to: 14, traffic: 1.0 },
+    { from: 9, to: 12, traffic: 1.1 },
+    { from: 10, to: 14, traffic: 1.2 },
+    { from: 13, to: 14, traffic: 1.1 }
 ];
 
 connections.forEach(conn => {
@@ -170,29 +219,49 @@ connections.forEach(conn => {
 });
 
 map.on('click', function(e) {
+    console.log('Map clicked at:', e.latlng); 
+    
     if (userMarker) {
         map.removeLayer(userMarker);
+        userMarker = null;
     }
+    
     userLocation = e.latlng;
-    const userIcon = L.divIcon({
-        className: 'user-marker',
-        html: '📍',
-        iconSize: [35, 35],
-        iconAnchor: [17.5, 17.5]
+    
+    const userIcon = L.icon({
+        iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+            <svg width="40" height="50" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="18" r="12" fill="#4285f4" stroke="white" stroke-width="3"/>
+                <path d="M 20 30 L 14 42 L 20 38 L 26 42 Z" fill="#4285f4" stroke="white" stroke-width="2"/>
+            </svg>
+        `),
+        iconSize: [40, 50],
+        iconAnchor: [20, 50],
+        popupAnchor: [0, -50]
     });
-    userMarker = L.marker(userLocation, { icon: userIcon }).addTo(map);
+    
+    userMarker = L.marker(userLocation, { icon: userIcon });
+    userMarker.addTo(map);
+    
+    console.log('Marker added:', userMarker); 
+    
     document.getElementById('findRouteBtn').disabled = false;
+    
     if (routeControl) {
         map.removeControl(routeControl);
         routeControl = null;
     }
     currentRoute = null;
+    document.getElementById('routeInfoContainer').innerHTML = '';
 });
 
 function findNearestStation(location) {
     let nearest = null;
     let minDist = Infinity;
-    stations.forEach(station => {
+    stationMarkers.forEach(({ station }) => {
+        const isVisible = (station.type === 'normal' && showNormal) || (station.type === 'fast' && showFast);
+        if (!isVisible) return;
+        
         const dist = haversine(location.lat, location.lng, station.latlng[0], station.latlng[1]);
         if (dist < minDist) {
             minDist = dist;
@@ -206,6 +275,12 @@ document.getElementById('findRouteBtn').addEventListener('click', () => {
     if (!userLocation) return;
 
     const nearest = findNearestStation(userLocation);
+    
+    if (!nearest) {
+        alert('No charging stations available with current filters!');
+        return;
+    }
+    
     const distToNearest = haversine(userLocation.lat, userLocation.lng, nearest.latlng[0], nearest.latlng[1]);
     const energyToNearest = distToNearest * 0.2;
 
@@ -234,7 +309,7 @@ document.getElementById('findRouteBtn').addEventListener('click', () => {
                 serviceUrl: 'https://router.project-osrm.org/route/v1'
             }),
             lineOptions: {
-                styles: [{ color: '#0277BD', weight: 6, dashArray: '10, 5' }]
+                styles: [{ color: '#1976d2', weight: 5, opacity: 0.8 }]
             },
             show: false,
             addWaypoints: false,
@@ -246,10 +321,10 @@ document.getElementById('findRouteBtn').addEventListener('click', () => {
             const route = e.routes[0];
             const actualDistance = route.summary.totalDistance / 1000;
             const actualEnergy = actualDistance * 0.2;
-            displayRouteInfo(result, actualDistance, actualEnergy);
+            displayRouteInfo(result, actualDistance, actualEnergy, nearest);
         });
 
-        map.fitBounds(routeControl.getBounds());
+        map.fitBounds(routeControl.getBounds(), { padding: [50, 50] });
 
     } else {
         alert('No valid route found. Battery insufficient!');
@@ -279,10 +354,20 @@ document.getElementById('resetBtn').addEventListener('click', () => {
     currentRoute = null;
     document.getElementById('findRouteBtn').disabled = true;
     document.getElementById('routeInfoContainer').innerHTML = '';
-    map.setView([15.366, 75.124], 15);
+    map.setView([15.366, 75.124], 13);
 });
 
-function displayRouteInfo(route, totalDistance, totalEnergy) {
+document.getElementById('showNormal').addEventListener('change', (e) => {
+    showNormal = e.target.checked;
+    updateStationVisibility();
+});
+
+document.getElementById('showFast').addEventListener('change', (e) => {
+    showFast = e.target.checked;
+    updateStationVisibility();
+});
+
+function displayRouteInfo(route, totalDistance, totalEnergy, targetStation) {
     const container = document.getElementById('routeInfoContainer');
     
     let pathHTML = '';
@@ -291,18 +376,23 @@ function displayRouteInfo(route, totalDistance, totalEnergy) {
             ? { name: 'Your Location' }
             : stations.find(s => s.id === nodeId);
         
+        const icon = nodeId === 'user' ? '📍' : (node.type === 'fast' ? '⚡' : '🔌');
+        
         pathHTML += `
             <div class="route-step">
-                ${index + 1}. ${node.name}
-                ${node.isChargingStation ? ' ⚡' : ''}
+                ${index + 1}. ${node.name} ${icon}
             </div>
         `;
     });
 
+    const chargingTime = targetStation.type === 'fast' 
+        ? (15 * 60 / targetStation.rate).toFixed(0)
+        : (15 * 60 / targetStation.rate).toFixed(0);
+
     container.innerHTML = `
-        <div class="path-found-banner">✅ Path Found! ⚡</div>
+        <div class="path-found-banner">✅ Route Calculated!</div>
         <div class="route-info">
-            <h3>Optimal Route Details</h3>
+            <h3>📍 Route to ${targetStation.name}</h3>
             <div class="route-stat">
                 <span>Distance:</span>
                 <span>${totalDistance.toFixed(2)} km</span>
@@ -312,15 +402,23 @@ function displayRouteInfo(route, totalDistance, totalEnergy) {
                 <span>${totalEnergy.toFixed(2)} kWh</span>
             </div>
             <div class="route-stat">
-                <span>Algorithm Cost:</span>
-                <span>${route.distance.toFixed(2)} units</span>
+                <span>Charging Type:</span>
+                <span>${targetStation.type === 'fast' ? '⚡ Fast' : '🔌 Normal'}</span>
             </div>
             <div class="route-stat">
-                <span>Stations on Route:</span>
-                <span>${route.path.filter(id => id !== 'user').length}</span>
+                <span>Charging Rate:</span>
+                <span>${targetStation.rate} kW</span>
+            </div>
+            <div class="route-stat">
+                <span>Est. Charge Time:</span>
+                <span>~${chargingTime} min (80%)</span>
+            </div>
+            <div class="route-stat">
+                <span>Cost:</span>
+                <span>₹${(15 * targetStation.price).toFixed(2)}</span>
             </div>
             <div class="route-path">
-                <strong>Route Path:</strong>
+                <strong>📍 Route Path:</strong>
                 ${pathHTML}
             </div>
         </div>
@@ -333,15 +431,28 @@ function populateStationList() {
 
     stations.forEach(station => {
         const item = document.createElement('div');
-        item.className = 'station-item';
+        item.className = `station-item ${station.type}`;
+        
+        const typeBadge = station.type === 'fast' 
+            ? '<span class="type-badge fast-badge">FAST</span>'
+            : '<span class="type-badge normal-badge">NORMAL</span>';
+        
         item.innerHTML = `
-            <h4>${station.name}</h4>
+            <h4>${station.name}${typeBadge}</h4>
+            <div class="station-detail">📍 ${station.location}</div>
             <div class="station-detail">⚡ Rate: ${station.rate} kW</div>
             <div class="station-detail">💰 Price: ₹${station.price}/kWh</div>
             <div class="station-detail">🔌 Ports: ${station.ports} available</div>
         `;
+        
+        item.addEventListener('click', () => {
+            map.setView(station.latlng, 15);
+            stationMarkers.find(sm => sm.station.id === station.id).marker.openPopup();
+        });
+        
         stationList.appendChild(item);
     });
 }
 
 populateStationList();
+updateStationCount();

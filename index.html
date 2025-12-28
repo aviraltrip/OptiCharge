@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EV Charging Station Finder - Dijkstra's Algorithm</title>
+    <title>OptiCharge - EV Charging Station Finder</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="styles.css">
@@ -12,11 +12,10 @@
     <div class="container">
         <div class="header">
             <h1>
-                <span>🔋</span>
-                EV Charging Station Finder
-                <span>⚡</span>
+                <span class="icon-glow">⚡</span>
+                OptiCharge
             </h1>
-            <p>Click on the map to set your location, then find the optimal charging route using Dijkstra's Algorithm</p>
+            <p>Smart EV Charging Station Finder | Hubli Region</p>
         </div>
 
         <div class="main-content">
@@ -26,8 +25,12 @@
                     <div class="legend">
                         <div class="legend-title">Map Legend</div>
                         <div class="legend-item">
-                            <div class="legend-icon icon-station">⚡</div>
-                            <span>Charging Station</span>
+                            <div class="legend-icon icon-fast">⚡</div>
+                            <span>Fast Charging</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-icon icon-normal">🔌</div>
+                            <span>Normal Charging</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-icon icon-user">📍</div>
@@ -43,40 +46,50 @@
 
             <div class="sidebar">
                 <div class="vehicle-info">
-                    <h3>🚗 Vehicle Information</h3>
+                    <h3>🚗 Vehicle Status</h3>
                     <div class="info-item">
                         <label>Battery Capacity:</label>
                         <span>60 kWh</span>
                     </div>
                     <div class="info-item">
-                        <label>Current Battery:</label>
-                        <span id="currentBattery">45 kWh</span>
+                        <label>Current Charge:</label>
+                        <span id="currentBattery">45 kWh (75%)</span>
                     </div>
                     <div class="info-item">
-                        <label>Range:</label>
+                        <label>Estimated Range:</label>
                         <span id="currentRange">225 km</span>
                     </div>
-                    <div class="info-item">
-                        <label>Min. Threshold:</label>
-                        <span>10 kWh</span>
+                </div>
+
+                <div class="filter-section">
+                    <div class="section-title">⚙️ Filter Stations</div>
+                    <div class="toggle-container">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="showNormal" checked>
+                            <span class="toggle-text">🔌 Normal Charging</span>
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="showFast" checked>
+                            <span class="toggle-text">⚡ Fast Charging</span>
+                        </label>
                     </div>
                 </div>
 
                 <div class="alert">
-                    ℹ️ Click anywhere on the map to set your starting location. The algorithm will find the nearest charging station.
+                    💡 Click on the map to set your location, then find the optimal charging route
                 </div>
 
                 <div class="controls">
                     <button class="btn btn-primary" id="findRouteBtn" disabled>
-                        🔍 Find Optimal Route
+                        <span>🔍</span> Find Optimal Route
                     </button>
                     <button class="btn btn-secondary" id="resetBtn">
-                        🔄 Reset Map
+                        <span>🔄</span> Reset Map
                     </button>
                 </div>
 
                 <div class="section-title">
-                    ⚡ Available Charging Stations
+                    ⚡ Available Stations (<span id="stationCount">15</span>)
                 </div>
                 <div class="station-list" id="stationList"></div>
 
