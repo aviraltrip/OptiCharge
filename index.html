@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Charging Station Finder - Dijkstra's Algorithm</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span>🔋</span>
+                EV Charging Station Finder
+                <span>⚡</span>
+            </h1>
+            <p>Click on the map to set your location, then find the optimal charging route using Dijkstra's Algorithm</p>
+        </div>
+
+        <div class="main-content">
+            <div class="map-section">
+                <div class="map-container">
+                    <div id="map"></div>
+                    <div class="legend">
+                        <div class="legend-title">Map Legend</div>
+                        <div class="legend-item">
+                            <div class="legend-icon icon-station">⚡</div>
+                            <span>Charging Station</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-icon icon-user">📍</div>
+                            <span>Your Location</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="icon-path"></div>
+                            <span>Optimal Route</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="vehicle-info">
+                    <h3>🚗 Vehicle Information</h3>
+                    <div class="info-item">
+                        <label>Battery Capacity:</label>
+                        <span>60 kWh</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Current Battery:</label>
+                        <span id="currentBattery">45 kWh</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Range:</label>
+                        <span id="currentRange">225 km</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Min. Threshold:</label>
+                        <span>10 kWh</span>
+                    </div>
+                </div>
+
+                <div class="alert">
+                    ℹ️ Click anywhere on the map to set your starting location. The algorithm will find the nearest charging station.
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" id="findRouteBtn" disabled>
+                        🔍 Find Optimal Route
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        🔄 Reset Map
+                    </button>
+                </div>
+
+                <div class="section-title">
+                    ⚡ Available Charging Stations
+                </div>
+                <div class="station-list" id="stationList"></div>
+
+                <div id="routeInfoContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
