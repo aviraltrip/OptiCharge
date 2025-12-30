@@ -1,18 +1,23 @@
-# ⚡ OptiCharge – Smart EV Charging Station Finder
-
 <div align="center">
+
+# ⚡ OptiCharge – Smart EV Charging Station Finder
 
 An intelligent web application to find the optimal EV charging station and route
 
-![GitHub](https://img.shields.io/github/license/yourusername/opticharge)
-![Status](https://img.shields.io/badge/status-active-success)
-![Platform](https://img.shields.io/badge/platform-web-blue)
-
-[Features](#-features) • [Demo](#-demo-workflow) • [Installation](#-installation) • [Usage](#-usage) • [Architecture](#-architecture) • [Algorithm](#-algorithm-details)
+[Overview](#-overview) •
+[Features](#-features) •
+[Demo](#-demo-workflow) •
+[Technology Stack](#-technology-stack) •
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Architecture](#-architecture) •
+[Algorithm](#-algorithm-details) •
+[Configuration](#-configuration)
 
 </div>
 
 ---
+
 
 ## 🌟 Overview
 
