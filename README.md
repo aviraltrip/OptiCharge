@@ -4,20 +4,9 @@
 
 An intelligent web application to find the optimal EV charging station and route
 
-[Overview](#overview) •
-[Features](#features) •
-[Demo](#demo-workflow) •
-[Technology Stack](#technology-stack) •
-[Installation](#installation) •
-[Usage](#usage) •
-[Architecture](#architecture) •
-[Algorithm](#algorithm-details) •
-[Configuration](#configuration)
-
 </div>
 
 ---
-
 
 ## 🌟 Overview
 
