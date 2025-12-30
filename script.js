@@ -95,7 +95,7 @@ class Graph {
     }
 }
 
-const map = L.map('map').setView([15.366, 75.124], 13); 
+const map = L.map('map').setView([15.366, 75.124], 12); 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
@@ -107,21 +107,21 @@ let routeControl = null;
 let currentRoute = null;
 
 const stations = [
-    { id: 0, name: 'KLE Tech University', location: 'Vidyanagar, Hubli', latlng: [15.3750, 75.1250], rate: 150, price: 12, ports: 8, type: 'fast' },
-    { id: 1, name: 'Unkal Lake', location: 'Unkal, Hubli', latlng: [15.3650, 75.1300], rate: 50, price: 8, ports: 4, type: 'normal' },
-    { id: 2, name: 'KIMS Hospital', location: 'Vidyanagar Road, Hubli', latlng: [15.3580, 75.1280], rate: 180, price: 13, ports: 10, type: 'fast' },
-    { id: 3, name: 'Urban Oasis Mall', location: 'Gokul Road, Hubli', latlng: [15.3720, 75.1320], rate: 60, price: 9, ports: 5, type: 'normal' },
-    { id: 4, name: 'Jubilee Circle', location: 'Old Hubli, Hubli', latlng: [15.3550, 75.1220], rate: 150, price: 12, ports: 7, type: 'fast' },
-    { id: 5, name: 'Gokul Road', location: 'Near BVB College, Hubli', latlng: [15.3620, 75.1150], rate: 55, price: 8.5, ports: 4, type: 'normal' },
-    { id: 6, name: 'BVB Campus', location: 'Vidyanagar, Hubli', latlng: [15.3700, 75.1180], rate: 120, price: 11, ports: 6, type: 'fast' },
-    { id: 7, name: 'Vidyanagar Circle', location: 'Vidyanagar Main Road, Hubli', latlng: [15.3580, 75.1180], rate: 50, price: 8, ports: 3, type: 'normal' },
-    { id: 8, name: 'Hosur Cross', location: 'Hosur Road, Hubli', latlng: [15.3800, 75.1400], rate: 120, price: 11, ports: 5, type: 'fast' },
-    { id: 9, name: 'Navanagar', location: 'Navanagar Main Road, Hubli', latlng: [15.3500, 75.1350], rate: 55, price: 8.5, ports: 4, type: 'normal' },
-    { id: 10, name: 'Rani Chennamma Circle', location: 'CBT Circle, Hubli', latlng: [15.3680, 75.1220], rate: 180, price: 13, ports: 9, type: 'fast' },
-    { id: 11, name: 'Lingaraj Nagar', location: 'Near Tunga Hospital, Hubli', latlng: [15.3480, 75.1100], rate: 50, price: 8, ports: 3, type: 'normal' },
-    { id: 12, name: 'Old Hubli Market', location: 'Koppikar Road, Hubli', latlng: [15.3600, 75.1380], rate: 150, price: 12, ports: 7, type: 'fast' },
-    { id: 13, name: 'Akshay Park', location: 'Akshay Colony, Hubli', latlng: [15.3820, 75.1100], rate: 60, price: 9, ports: 4, type: 'normal' },
-    { id: 14, name: 'NH-48 Toll Plaza', location: 'Dharwad Road, Hubli', latlng: [15.3900, 75.1300], rate: 200, price: 14, ports: 12, type: 'fast' }
+    { id: 0, name: 'KLE Tech University', location: 'Vidyanagar, Hubli', latlng: [15.4050, 75.1250], rate: 150, price: 12, ports: 8, type: 'fast' },
+    { id: 1, name: 'Unkal Lake', location: 'Unkal, Hubli', latlng: [15.3500, 75.0900], rate: 50, price: 8, ports: 4, type: 'normal' },
+    { id: 2, name: 'KIMS Hospital', location: 'Vidyanagar Road, Hubli', latlng: [15.3200, 75.1650], rate: 180, price: 13, ports: 10, type: 'fast' },
+    { id: 3, name: 'Urban Oasis Mall', location: 'Gokul Road, Hubli', latlng: [15.4200, 75.0750], rate: 60, price: 9, ports: 5, type: 'normal' },
+    { id: 4, name: 'Jubilee Circle', location: 'Old Hubli, Hubli', latlng: [15.2900, 75.1100], rate: 150, price: 12, ports: 7, type: 'fast' },
+    { id: 5, name: 'Gokul Road', location: 'Near BVB College, Hubli', latlng: [15.3650, 75.0600], rate: 55, price: 8.5, ports: 4, type: 'normal' },
+    { id: 6, name: 'BVB Campus', location: 'Vidyanagar, Hubli', latlng: [15.3850, 75.1750], rate: 120, price: 11, ports: 6, type: 'fast' },
+    { id: 7, name: 'Vidyanagar Circle', location: 'Vidyanagar Main Road, Hubli', latlng: [15.3100, 75.0850], rate: 50, price: 8, ports: 3, type: 'normal' },
+    { id: 8, name: 'Hosur Cross', location: 'Hosur Road, Hubli', latlng: [15.4500, 75.1600], rate: 120, price: 11, ports: 5, type: 'fast' },
+    { id: 9, name: 'Navanagar', location: 'Navanagar Main Road, Hubli', latlng: [15.2800, 75.1550], rate: 55, price: 8.5, ports: 4, type: 'normal' },
+    { id: 10, name: 'Rani Chennamma Circle', location: 'CBT Circle, Hubli', latlng: [15.3700, 75.1350], rate: 180, price: 13, ports: 9, type: 'fast' },
+    { id: 11, name: 'Lingaraj Nagar', location: 'Near Tunga Hospital, Hubli', latlng: [15.3300, 75.0500], rate: 50, price: 8, ports: 3, type: 'normal' },
+    { id: 12, name: 'Old Hubli Market', location: 'Koppikar Road, Hubli', latlng: [15.3000, 75.1800], rate: 150, price: 12, ports: 7, type: 'fast' },
+    { id: 13, name: 'Akshay Park', location: 'Akshay Colony, Hubli', latlng: [15.4400, 75.0550], rate: 60, price: 9, ports: 4, type: 'normal' },
+    { id: 14, name: 'NH-48 Toll Plaza', location: 'Dharwad Road, Hubli', latlng: [15.4700, 75.1200], rate: 200, price: 14, ports: 12, type: 'fast' }
 ];
 
 const stationMarkers = [];
@@ -354,7 +354,7 @@ document.getElementById('resetBtn').addEventListener('click', () => {
     currentRoute = null;
     document.getElementById('findRouteBtn').disabled = true;
     document.getElementById('routeInfoContainer').innerHTML = '';
-    map.setView([15.366, 75.124], 13);
+    map.setView([15.366, 75.124], 12);
 });
 
 document.getElementById('showNormal').addEventListener('change', (e) => {
