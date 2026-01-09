@@ -1,4 +1,6 @@
-# ⚡ OptiCharge – Smart EV Charging Station Finder
+<div align="center">
+<h1>⚡ OptiCharge – Smart EV Charging Station Finder</h1>
+</div>
 
 <div align="center">
 An intelligent web application powered by Dijkstra's Algorithm to find the optimal EV charging station and route in the Hubli region
